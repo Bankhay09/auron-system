@@ -1,0 +1,10 @@
+{
+  "name": "Auron System",
+  "short_name": "Auron",
+  "description": "Plataforma de disciplina, diario estoico, habitos, metricas e IA.",
+  "start_url": "/login",
+  "display": "standalone",
+  "background_color": "#050506",
+  "theme_color": "#7a1515",
+  "icons": []
+}

@@ -1,0 +1,16 @@
+# YEARLY PERFORMANCE
+
+```dataviewjs
+const code = await app.vault.adapter.read("00 - System/System Core.js");
+const SLCore = new Function(`${code}; return SLCore;`)();
+const data = SLCore.build(dv);
+const { year, yearDays, helpers } = data;
+const { dayScore, pct } = helpers;
+const months = Array.from({ length: 12 }, (_, index) => {
+  const days = yearDays.filter(day => day.date.getMonth() === index);
+  return helpers.summarize(new Date(data.today.getFullYear(), index, 1).toLocaleDateString("pt-BR", { month: "short" }).replace(".", ""), days, data.today);
+});
+const bars = months.map(item => `<div class="col"><strong style="height:${18 + item.score * 1.25}px"></strong><span>${item.label}<br>${item.score}</span></div>`).join("");
+const heat = yearDays.map(day => `<div class="cell ${day.validDay ? "ok" : day.failedMain ? "bad" : day.completedCount ? "warn" : ""}" title="${day.key} // ${dayScore(day)}"></div>`).join("");
+dv.container.innerHTML = `<style>.stats{--line:rgba(220,170,255,.28);--pink:#f058ff;--muted:#c9b9dc;color:#f7efff;border:1px solid var(--line);border-radius:18px;padding:22px;background:radial-gradient(circle at 20% 10%,rgba(240,88,255,.18),transparent 30%),linear-gradient(180deg,#141020,#080711)}.top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:16px}.top h1{margin:0;font-size:34px;text-shadow:0 0 10px rgba(240,88,255,.7)}.pill{border:1px solid rgba(240,88,255,.45);border-radius:999px;padding:10px 16px;background:rgba(240,88,255,.14);font-weight:900}.grid{display:grid;grid-template-columns:1fr 1.4fr;gap:14px}.card{border:1px solid var(--line);border-radius:14px;background:rgba(12,9,24,.86);padding:14px;overflow:hidden}.big{font-size:34px;font-weight:950}.chart{height:260px;display:grid;grid-template-columns:repeat(12,1fr);gap:10px;align-items:end;border-bottom:1px solid rgba(255,255,255,.16)}.col{height:235px;display:grid;align-items:end;text-align:center;gap:6px}.col strong{display:block;min-height:8px;border-radius:10px 10px 3px 3px;background:linear-gradient(180deg,#ff5cff,#6b3ac5)}.col span{font-size:10px;color:var(--muted)}.heat{display:grid;grid-template-columns:repeat(31,1fr);gap:4px}.cell{aspect-ratio:1;border-radius:4px;background:rgba(255,255,255,.08)}.cell.ok{background:#cc4dff}.cell.warn{background:#a66cff}.cell.bad{background:#ff5a78}.row{display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.08);padding:8px 0;color:var(--muted)}.row b{color:#fff}@media(max-width:900px){.grid{grid-template-columns:1fr}.top{display:block}.heat{grid-template-columns:repeat(14,1fr)}}</style><div class="stats"><div class="top"><div><h1>YEARLY PERFORMANCE</h1><p>${data.today.getFullYear()}</p></div><div class="pill">${year.score}/100 ano</div></div><div class="grid"><section class="card"><h2>Resumo anual</h2><div class="big">${year.xp} XP</div><div class="row"><span>Dias validos</span><b>${year.valid}/${year.days}</b></div><div class="row"><span>Dias perfeitos</span><b>${year.perfect}</b></div><div class="row"><span>Penalidades</span><b>-${year.penalties} XP</b></div></section><section class="card"><h2>Grafico mensal</h2><div class="chart">${bars}</div></section><section class="card" style="grid-column:1/-1"><h2>Heatmap anual</h2><div class="heat">${heat}</div></section></div></div>`;
+```
