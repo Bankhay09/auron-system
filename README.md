@@ -25,6 +25,8 @@ Plataforma premium de disciplina, diario estoico, habitos, metricas e IA.
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
+- `RESEND_API_KEY`
+- `PASSWORD_RESET_FROM_EMAIL`
 - `AUTH_SECRET`
 - `RESEND_API_KEY`
 - `EMAIL_FROM`

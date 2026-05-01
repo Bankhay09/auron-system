@@ -1,10 +1,10 @@
 import { AuthFrame } from "@/components/auth/AuthFrame";
-import { AuthForm } from "@/components/auth/AuthForm";
+import { PasswordResetFlow } from "@/components/auth/PasswordResetFlow";
 
 export default function ForgotPasswordPage() {
   return (
-    <AuthFrame title="Recuperar senha" subtitle="Enviaremos um codigo temporario para seu email.">
-      <AuthForm mode="forgot" />
+    <AuthFrame title="Recuperar senha" subtitle="Informe seu email, valide o codigo e defina uma nova senha.">
+      <PasswordResetFlow />
     </AuthFrame>
   );
 }

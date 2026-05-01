@@ -15,8 +15,11 @@ create table if not exists public.users (
 create table if not exists public.password_reset_codes (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references public.users(id) on delete cascade,
+  email text,
+  code text,
   code_hash text not null,
   expires_at timestamptz not null,
+  used boolean not null default false,
   used_at timestamptz,
   created_at timestamptz not null default now()
 );
@@ -97,6 +100,7 @@ create table if not exists public.social_usage_logs (
 );
 
 create index if not exists idx_diary_entries_user_date on public.diary_entries(user_id, entry_date desc);
+create index if not exists idx_password_reset_codes_email on public.password_reset_codes(email, created_at desc);
 create index if not exists idx_habit_checkins_user_date on public.habit_checkins(user_id, checkin_date desc);
 create index if not exists idx_daily_quest_logs_user_date on public.daily_quest_logs(user_id, quest_date desc);
 create index if not exists idx_social_usage_user_date on public.social_usage_logs(user_id, usage_date desc);
