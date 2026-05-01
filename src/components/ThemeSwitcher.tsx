@@ -16,8 +16,7 @@ export function ThemeSwitcher() {
   const [selected, setSelected] = useState<ThemeName>("cyan");
 
   useEffect(() => {
-    const key = user ? `auron-theme:${user.id}` : "auron-theme:public";
-    const value = (localStorage.getItem(key) || user?.theme || "cyan") as ThemeName;
+    const value = (user?.theme || "cyan") as ThemeName;
     setSelected(value);
     applyTheme(value);
   }, [user]);
@@ -25,9 +24,7 @@ export function ThemeSwitcher() {
   async function choose(theme: ThemeName) {
     setSelected(theme);
     applyTheme(theme);
-    localStorage.setItem("auron-theme:active", theme);
-    localStorage.setItem(user ? `auron-theme:${user.id}` : "auron-theme:public", theme);
-    window.dispatchEvent(new Event("auron-theme-change"));
+    window.dispatchEvent(new CustomEvent("auron-theme-change", { detail: theme }));
     if (user) {
       await fetch("/api/me", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ theme }) }).catch(() => null);
     }
@@ -46,7 +43,7 @@ export function ThemeSwitcher() {
           </button>
         ))}
       </div>
-      <div className="text-xs text-[#a9dfff]">Tema salvo {user ? "para este usuario" : "neste dispositivo"}.</div>
+      <div className="text-xs text-[#a9dfff]">Tema salvo no perfil do usuario.</div>
     </div>
   );
 }

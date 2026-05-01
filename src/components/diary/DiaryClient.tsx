@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { ArchitectCard } from "./ArchitectCard";
-import { useCurrentUser } from "@/lib/use-current-user";
 
 type DiaryEntry = {
   id?: string;
@@ -14,7 +13,6 @@ type DiaryEntry = {
 };
 
 export function DiaryClient() {
-  const { user } = useCurrentUser();
   const [content, setContent] = useState("");
   const [mood, setMood] = useState(5);
   const [progress, setProgress] = useState(50);
@@ -38,8 +36,8 @@ export function DiaryClient() {
       setMessage(data.message || "Nao foi possivel salvar o diario.");
       return;
     }
-    localStorage.setItem(`auron-diary:${user?.id || "local"}:${new Date().toISOString().slice(0, 10)}`, "true");
     setEntries((current) => [data.entry, ...current.filter((entry) => entry.entry_date !== data.entry.entry_date)]);
+    window.dispatchEvent(new Event("auron-diary-saved"));
     const ai = await fetch("/api/architect", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ diaryEntryId: data.entry.id, content }) });
     const aiData = await ai.json();
     if (ai.ok) setArchitect(aiData.architect);

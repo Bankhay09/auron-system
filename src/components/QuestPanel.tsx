@@ -7,9 +7,8 @@ import { useCurrentUser } from "@/lib/use-current-user";
 
 export function QuestPanel() {
   const { user, loading } = useCurrentUser();
-  const { daily, completedTasks, dayProgress, predictedXp, predictedCoins, requiredFailed, allCompleted, toggleHabit, completeQuest, closeDay } = useAuronSystem({ userId: user?.id, username: user?.username, onboardingData: user?.onboardingData });
+  const { daily, completedTasks, dayProgress, predictedXp, predictedCoins, requiredFailed, allCompleted, diaryWritten, toggleHabit, completeQuest, closeDay } = useAuronSystem({ userId: user?.id, username: user?.username, onboardingData: user?.onboardingData });
   const [effect, setEffect] = useState<"idle" | "mark" | "glitch" | "reward" | "xp">("idle");
-  const [diaryWritten, setDiaryWritten] = useState(false);
 
   useEffect(() => {
     if (effect === "idle") return;
@@ -17,21 +16,17 @@ export function QuestPanel() {
     return () => window.clearTimeout(timer);
   }, [effect]);
 
-  useEffect(() => {
-    setDiaryWritten(localStorage.getItem(`auron-diary:${user?.id || "local"}:${daily.date}`) === "true");
-  }, [daily.date, user?.id]);
-
   if (loading) {
     return <div className="auron-panel rounded-2xl p-5">Carregando pactos diarios...</div>;
   }
 
-  function markHabit(id: string) {
+  async function markHabit(id: string) {
     if (daily.completed) return;
-    toggleHabit(id);
+    await toggleHabit(id);
     setEffect("mark");
   }
 
-  function finishQuest() {
+  async function finishQuest() {
     if (!diaryWritten) {
       setEffect("glitch");
       return;
@@ -42,12 +37,12 @@ export function QuestPanel() {
       return;
     }
     setEffect("reward");
-    completeQuest();
+    await completeQuest();
   }
 
-  function finishDay() {
+  async function finishDay() {
     setEffect(allCompleted ? "xp" : "glitch");
-    closeDay();
+    await closeDay();
   }
 
   return (

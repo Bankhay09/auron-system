@@ -47,6 +47,22 @@ create table if not exists public.habit_checkins (
   unique(user_id, habit_id, checkin_date)
 );
 
+create table if not exists public.daily_quest_logs (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references public.users(id) on delete cascade,
+  quest_date date not null default current_date,
+  completed boolean not null default false,
+  total_xp int not null default 0,
+  total_coins int not null default 0,
+  valid_day boolean not null default false,
+  perfect_day boolean not null default false,
+  penalty_applied boolean not null default false,
+  last_completed_at timestamptz,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  unique(user_id, quest_date)
+);
+
 create table if not exists public.diary_entries (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references public.users(id) on delete cascade,
@@ -82,6 +98,7 @@ create table if not exists public.social_usage_logs (
 
 create index if not exists idx_diary_entries_user_date on public.diary_entries(user_id, entry_date desc);
 create index if not exists idx_habit_checkins_user_date on public.habit_checkins(user_id, checkin_date desc);
+create index if not exists idx_daily_quest_logs_user_date on public.daily_quest_logs(user_id, quest_date desc);
 create index if not exists idx_social_usage_user_date on public.social_usage_logs(user_id, usage_date desc);
 create index if not exists idx_ai_messages_user_date on public.ai_messages(user_id, created_at desc);
 
@@ -89,6 +106,7 @@ alter table public.users enable row level security;
 alter table public.password_reset_codes enable row level security;
 alter table public.habits enable row level security;
 alter table public.habit_checkins enable row level security;
+alter table public.daily_quest_logs enable row level security;
 alter table public.diary_entries enable row level security;
 alter table public.ai_messages enable row level security;
 alter table public.social_usage_logs enable row level security;
