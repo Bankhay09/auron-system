@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { isSupabasePublicConfigured } from "@/lib/supabase";
 
 type Mode = "login" | "register" | "forgot" | "reset";
 
@@ -11,6 +12,10 @@ export function AuthForm({ mode, onSuccess }: { mode: Mode; onSuccess?: (data: a
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (!isSupabasePublicConfigured) {
+      setMessage("Configuracao publica do Supabase incompleta. Defina NEXT_PUBLIC_SUPABASE_URL e NEXT_PUBLIC_SUPABASE_ANON_KEY.");
+      return;
+    }
     setLoading(true);
     setMessage("");
     const form = new FormData(event.currentTarget);
@@ -30,7 +35,7 @@ export function AuthForm({ mode, onSuccess }: { mode: Mode; onSuccess?: (data: a
     const data = await response.json();
     setLoading(false);
     if (!response.ok) {
-      setMessage(data.message || "Algo falhou. Tente novamente.");
+      setMessage(publicErrorMessage(data.message));
       return;
     }
     if (data.redirectTo && onSuccess) onSuccess(data);
@@ -57,6 +62,14 @@ export function AuthForm({ mode, onSuccess }: { mode: Mode; onSuccess?: (data: a
       </div>
     </form>
   );
+}
+
+function publicErrorMessage(message?: string) {
+  if (!message) return "Algo falhou. Tente novamente.";
+  if (/Supabase nao configurado|Supabase backend nao configurado|variaveis de ambiente/i.test(message)) {
+    return "Banco de dados indisponivel no servidor. Tente novamente em instantes.";
+  }
+  return message;
 }
 
 function Field(props: { name: string; label: string; type?: string; autoComplete?: string; inputMode?: "numeric" }) {
