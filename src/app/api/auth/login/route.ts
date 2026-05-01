@@ -2,25 +2,12 @@ import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/server/supabase-admin";
 import { verifyPassword } from "@/lib/server/password";
 import { setSessionCookie, signSession } from "@/lib/server/session";
-import { readDevDb, shouldUseDevDb } from "@/lib/server/dev-db";
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     const login = String(body.login || "").trim().toLowerCase();
     const password = String(body.password || "");
-    if (shouldUseDevDb()) {
-      const db = readDevDb();
-      const user = db.users.find((item) => item.email === login || item.username === login);
-      if (!user || !verifyPassword(password, user.password_hash)) {
-        return NextResponse.json({ ok: false, message: "Email, usuario ou senha incorretos." }, { status: 401 });
-      }
-      const token = await signSession({ userId: user.id, username: user.username, onboardingCompleted: user.onboarding_completed });
-      const response = NextResponse.json({ ok: true, redirectTo: user.onboarding_completed ? "/dashboard" : "/onboarding" });
-      setSessionCookie(response, token);
-      return response;
-    }
-
     const supabase = getSupabaseAdmin();
 
     const query = login.includes("@")

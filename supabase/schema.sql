@@ -84,3 +84,11 @@ create index if not exists idx_diary_entries_user_date on public.diary_entries(u
 create index if not exists idx_habit_checkins_user_date on public.habit_checkins(user_id, checkin_date desc);
 create index if not exists idx_social_usage_user_date on public.social_usage_logs(user_id, usage_date desc);
 create index if not exists idx_ai_messages_user_date on public.ai_messages(user_id, created_at desc);
+
+alter table public.users enable row level security;
+alter table public.password_reset_codes enable row level security;
+alter table public.habits enable row level security;
+alter table public.habit_checkins enable row level security;
+alter table public.diary_entries enable row level security;
+alter table public.ai_messages enable row level security;
+alter table public.social_usage_logs enable row level security;

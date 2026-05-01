@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/server/session";
 import { getSupabaseAdmin } from "@/lib/server/supabase-admin";
-import { createDevId, nowIso, readDevDb, shouldUseDevDb, writeDevDb } from "@/lib/server/dev-db";
 
 export async function POST(request: Request) {
   const session = await getSession();
@@ -10,24 +9,6 @@ export async function POST(request: Request) {
   const appName = String(body.appName || "").trim().slice(0, 80);
   const minutesSpent = Math.max(0, Number(body.minutesSpent || 0));
   if (!appName) return NextResponse.json({ ok: false, message: "Informe o aplicativo." }, { status: 400 });
-
-  if (shouldUseDevDb()) {
-    const db = readDevDb();
-    const log = {
-      id: createDevId(),
-      user_id: session.userId,
-      usage_date: String(body.usageDate || new Date().toISOString().slice(0, 10)),
-      app_name: appName,
-      minutes_spent: minutesSpent,
-      screenshot_url: body.screenshotUrl || null,
-      notes: String(body.notes || "").slice(0, 1000),
-      source: "manual",
-      created_at: nowIso()
-    };
-    db.socialUsageLogs.push(log);
-    writeDevDb(db);
-    return NextResponse.json({ ok: true, log });
-  }
 
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase

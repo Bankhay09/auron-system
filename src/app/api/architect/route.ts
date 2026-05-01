@@ -1,22 +1,14 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/server/session";
 import { getSupabaseAdmin } from "@/lib/server/supabase-admin";
-import { readDevDb, shouldUseDevDb, writeDevDb } from "@/lib/server/dev-db";
 
 export async function POST(request: Request) {
   const session = await getSession();
   if (!session) return NextResponse.json({ ok: false, message: "Sessao expirada." }, { status: 401 });
 
-  const { diaryEntryId, content } = await request.json();
+  const { content } = await request.json();
   const prompt = buildArchitectPrompt(String(content || ""));
   const response = await askAI(prompt);
-
-  if (shouldUseDevDb()) {
-    const db = readDevDb();
-    db.aiMessages.push({ user_id: session.userId, role: "assistant", content: JSON.stringify(response), diary_entry_id: diaryEntryId || null, prompt, created_at: new Date().toISOString() });
-    writeDevDb(db);
-    return NextResponse.json({ ok: true, architect: response });
-  }
 
   const supabase = getSupabaseAdmin();
   await supabase.from("ai_messages").insert({

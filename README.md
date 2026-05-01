@@ -32,3 +32,5 @@ Plataforma premium de disciplina, diario estoico, habitos, metricas e IA.
 - `AI_API_URL`
 
 Senhas sao salvas com PBKDF2. A chave `SUPABASE_SERVICE_ROLE_KEY` deve ficar apenas no backend/Vercel.
+
+O backend nao usa armazenamento em disco local. Em producao, cadastro, login, recuperacao de senha, diario, onboarding, IA e registros sociais dependem do Supabase configurado pelas variaveis de ambiente.

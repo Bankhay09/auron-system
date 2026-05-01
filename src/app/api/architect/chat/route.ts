@@ -1,21 +1,13 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/server/session";
 import { getSupabaseAdmin } from "@/lib/server/supabase-admin";
-import { readDevDb, shouldUseDevDb, writeDevDb } from "@/lib/server/dev-db";
 
-const FIRST_MESSAGE = "Eu sou o Arquiteto. Não estou aqui para te confortar com mentiras, mas para te ajudar a construir a versão que você prometeu ser. Escreva seu diário, cumpra seus pactos e eu analisarei seus padrões.";
+const FIRST_MESSAGE = "Eu sou o Arquiteto. Nao estou aqui para te confortar com mentiras, mas para te ajudar a construir a versao que voce prometeu ser. Escreva seu diario, cumpra seus pactos e eu analisarei seus padroes.";
 const rateLimit = new Map<string, number[]>();
 
 export async function GET() {
   const session = await getSession();
   if (!session) return NextResponse.json({ ok: false, message: "Sessao expirada." }, { status: 401 });
-
-  if (shouldUseDevDb()) {
-    const db = readDevDb();
-    const messages = db.aiMessages.filter((message: any) => message.user_id === session.userId).slice(-50);
-    if (!messages.length) return NextResponse.json({ ok: true, messages: [systemIntro(session.userId)] });
-    return NextResponse.json({ ok: true, messages });
-  }
 
   const supabase = getSupabaseAdmin();
   const { data } = await supabase.from("ai_messages").select("id, role, content, created_at").eq("user_id", session.userId).order("created_at", { ascending: true }).limit(50);
@@ -37,28 +29,16 @@ export async function POST(request: Request) {
   const userMessage = { id: crypto.randomUUID(), user_id: session.userId, role: "user", content, created_at: new Date().toISOString() };
   const assistantMessage = { id: crypto.randomUUID(), user_id: session.userId, role: "assistant", content: answer, created_at: new Date().toISOString() };
 
-  if (shouldUseDevDb()) {
-    const db = readDevDb();
-    db.aiMessages.push(userMessage, assistantMessage);
-    writeDevDb(db);
-  } else {
-    const supabase = getSupabaseAdmin();
-    await supabase.from("ai_messages").insert([
-      { user_id: session.userId, role: "user", content },
-      { user_id: session.userId, role: "assistant", content: answer }
-    ]);
-  }
+  const supabase = getSupabaseAdmin();
+  await supabase.from("ai_messages").insert([
+    { user_id: session.userId, role: "user", content },
+    { user_id: session.userId, role: "assistant", content: answer }
+  ]);
 
   return NextResponse.json({ ok: true, messages: [userMessage, assistantMessage] });
 }
 
 async function loadContext(userId: string) {
-  if (shouldUseDevDb()) {
-    const db = readDevDb();
-    const user = db.users.find((item) => item.id === userId);
-    const diary = db.diaryEntries.filter((entry) => entry.user_id === userId).sort((a, b) => b.entry_date.localeCompare(a.entry_date))[0];
-    return { onboarding: user?.onboarding_data, latestDiary: diary, metrics: { diaryDays: db.diaryEntries.filter((entry) => entry.user_id === userId).length } };
-  }
   const supabase = getSupabaseAdmin();
   const [{ data: user }, { data: diary }] = await Promise.all([
     supabase.from("users").select("onboarding_data").eq("id", userId).maybeSingle(),

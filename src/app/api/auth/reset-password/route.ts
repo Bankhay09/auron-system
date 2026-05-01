@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/server/supabase-admin";
 import { hashCode, hashPassword } from "@/lib/server/password";
 import { isEmail, validatePassword } from "@/lib/server/validation";
-import { nowIso, readDevDb, shouldUseDevDb, writeDevDb } from "@/lib/server/dev-db";
 
 export async function POST(request: Request) {
   try {
@@ -12,19 +11,6 @@ export async function POST(request: Request) {
     const password = String(body.password || "");
     if (!isEmail(email) || !/^\d{6}$/.test(code)) return error("Codigo ou email invalido.", 400);
     if (!validatePassword(password)) return error("A senha precisa ter pelo menos 8 caracteres.", 400);
-
-    if (shouldUseDevDb()) {
-      const db = readDevDb();
-      const user = db.users.find((item) => item.email === email);
-      if (!user) return error("Codigo invalido ou expirado.", 400);
-      const reset = db.resetCodes.find((item) => item.user_id === user.id && item.code_hash === hashCode(code) && !item.used_at);
-      if (!reset || new Date(reset.expires_at).getTime() < Date.now()) return error("Codigo invalido ou expirado.", 400);
-      user.password_hash = hashPassword(password);
-      user.updated_at = nowIso();
-      reset.used_at = nowIso();
-      writeDevDb(db);
-      return NextResponse.json({ ok: true, message: "Senha redefinida com sucesso." });
-    }
 
     const supabase = getSupabaseAdmin();
     const { data: user } = await supabase.from("users").select("id").eq("email", email).maybeSingle();
