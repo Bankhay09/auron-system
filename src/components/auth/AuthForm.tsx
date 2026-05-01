@@ -65,11 +65,7 @@ export function AuthForm({ mode, onSuccess }: { mode: Mode; onSuccess?: (data: a
 }
 
 function publicErrorMessage(message?: string) {
-  if (!message) return "Algo falhou. Tente novamente.";
-  if (/Supabase nao configurado|Supabase backend nao configurado|variaveis de ambiente/i.test(message)) {
-    return "Banco de dados indisponivel no servidor. Tente novamente em instantes.";
-  }
-  return message;
+  return message || "Algo falhou. Tente novamente.";
 }
 
 function Field(props: { name: string; label: string; type?: string; autoComplete?: string; inputMode?: "numeric" }) {
