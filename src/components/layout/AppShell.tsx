@@ -8,6 +8,7 @@ const nav = [
   ["Dashboard", "/dashboard"],
   ["Daily Quest", "/daily-quest"],
   ["Diario", "/diary"],
+  ["Ranking", "/ranking"],
   ["Redes Sociais", "/social"],
   ["Side Quests", "/side-quests"],
   ["Weekly", "/weekly"],

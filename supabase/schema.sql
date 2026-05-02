@@ -5,11 +5,24 @@ create table if not exists public.users (
   username text not null unique,
   email text not null unique,
   password_hash text not null,
+  xp integer not null default 0,
+  rank text not null default 'E',
   onboarding_completed boolean not null default false,
   onboarding_data jsonb not null default '{}'::jsonb,
   theme text not null default 'cyan',
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
+);
+
+create table if not exists public.friendships (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references public.users(id) on delete cascade,
+  friend_id uuid not null references public.users(id) on delete cascade,
+  status text not null default 'pending' check (status in ('pending', 'accepted', 'declined')),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  constraint friendships_no_self check (user_id <> friend_id),
+  unique(user_id, friend_id)
 );
 
 create table if not exists public.password_reset_codes (
@@ -100,6 +113,10 @@ create table if not exists public.social_usage_logs (
 );
 
 create index if not exists idx_diary_entries_user_date on public.diary_entries(user_id, entry_date desc);
+create index if not exists idx_users_rank_xp on public.users(rank, xp desc);
+create index if not exists idx_users_xp on public.users(xp desc);
+create index if not exists idx_friendships_user_status on public.friendships(user_id, status);
+create index if not exists idx_friendships_friend_status on public.friendships(friend_id, status);
 create index if not exists idx_password_reset_codes_email on public.password_reset_codes(email, created_at desc);
 create index if not exists idx_habit_checkins_user_date on public.habit_checkins(user_id, checkin_date desc);
 create index if not exists idx_daily_quest_logs_user_date on public.daily_quest_logs(user_id, quest_date desc);
@@ -107,6 +124,7 @@ create index if not exists idx_social_usage_user_date on public.social_usage_log
 create index if not exists idx_ai_messages_user_date on public.ai_messages(user_id, created_at desc);
 
 alter table public.users enable row level security;
+alter table public.friendships enable row level security;
 alter table public.password_reset_codes enable row level security;
 alter table public.habits enable row level security;
 alter table public.habit_checkins enable row level security;

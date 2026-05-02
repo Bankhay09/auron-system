@@ -1,4 +1,4 @@
-export type Rank = "E" | "D" | "C" | "B" | "A" | "S" | "SS";
+export type Rank = "E" | "D" | "C" | "B" | "A" | "S" | "SS" | "SSS";
 
 export type SystemState =
   | "normal"
@@ -69,4 +69,3 @@ export type PerformancePoint = {
   tasks: number;
   valid: boolean;
 };
-

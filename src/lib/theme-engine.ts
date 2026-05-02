@@ -20,7 +20,8 @@ export const rankThemes: Record<Rank, AuronTheme> = {
   B: theme("#5cff9d", "#2fffd2", "#9dffd0", "high", "aura"),
   A: theme("#ffd166", "#53e5ff", "#ffe8a3", "high", "gold-rain"),
   S: theme("#9d63ff", "#53e5ff", "#c084fc", "cinematic", "aura"),
-  SS: theme("#ff244d", "#080611", "#ff6b8a", "cinematic", "alarm", "glitch")
+  SS: theme("#ff244d", "#080611", "#ff6b8a", "cinematic", "alarm", "glitch"),
+  SSS: theme("#ffffff", "#00e5ff", "#ffffff", "cinematic", "aura", "ornate")
 };
 
 export const stateThemes: Partial<Record<SystemState, Partial<AuronTheme>>> = {

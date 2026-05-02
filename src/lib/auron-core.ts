@@ -1,4 +1,5 @@
 import type { DailyQuestLog, Habit, PerformancePoint, PlayerProfile, Rank, SystemEvent } from "@/types/auron";
+import { calculateRank } from "@/lib/ranking";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -65,7 +66,7 @@ export function buildSnapshot(state: AuronState, username: string, diaryWritten 
       username,
       title: "Awakening Player",
       level,
-      rank: resolveRank(totalXp),
+      rank: calculateRank(totalXp),
       totalXp,
       currentXp: totalXp % 100,
       nextLevelXp: 100,
@@ -213,16 +214,6 @@ function calculateStreak(logs: DailyQuestLog[]) {
 function averageScore(points: PerformancePoint[]) {
   if (!points.length) return 0;
   return Math.round(points.reduce((sum, point) => sum + point.score, 0) / points.length);
-}
-
-function resolveRank(xp: number): Rank {
-  if (xp >= 7000) return "SS";
-  if (xp >= 5000) return "S";
-  if (xp >= 3000) return "A";
-  if (xp >= 1800) return "B";
-  if (xp >= 1000) return "C";
-  if (xp >= 500) return "D";
-  return "E";
 }
 
 function isWorkoutDay(date: string) {

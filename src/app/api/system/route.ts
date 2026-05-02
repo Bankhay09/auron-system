@@ -39,6 +39,8 @@ type DbUser = {
   id: string;
   username: string;
   onboarding_data: OnboardingData;
+  xp: number;
+  rank: string;
 };
 
 export async function GET() {
@@ -148,7 +150,7 @@ async function loadSystem() {
   if (!session) return { response: NextResponse.json({ ok: false, message: "Sessao expirada." }, { status: 401 }) };
 
   const supabase = getSupabaseAdmin();
-  const { data: user } = await supabase.from("users").select("id, username, onboarding_data").eq("id", session.userId).maybeSingle<DbUser>();
+  const { data: user } = await supabase.from("users").select("id, username, onboarding_data, xp, rank").eq("id", session.userId).maybeSingle<DbUser>();
   if (!user) return { response: NextResponse.json({ ok: false, message: "Usuario nao encontrado." }, { status: 404 }) };
 
   const habits = await ensureHabits(supabase, user);
@@ -161,6 +163,12 @@ async function loadSystem() {
 
   const state = buildState(habits, checkins ?? [], questLogs ?? []);
   const snapshot = buildSnapshot(state, user.username, Boolean(diary));
+  if (user.xp !== snapshot.player.totalXp || user.rank !== snapshot.player.rank) {
+    await supabase
+      .from("users")
+      .update({ xp: snapshot.player.totalXp, rank: snapshot.player.rank, updated_at: new Date().toISOString() })
+      .eq("id", user.id);
+  }
   return { supabase, session, user, habits, snapshot };
 }
 
