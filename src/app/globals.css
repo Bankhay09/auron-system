@@ -344,100 +344,77 @@ body {
     box-shadow: 0 0 54px color-mix(in srgb, var(--auron-primary) 72%, transparent);
   }
 
-  .architect-container {
-    --architect-size: 160px;
-    --architect-accent: var(--auron-primary);
-    --architect-glow-opacity: 0.48;
+  .architect-core {
+    --architect-size: 140px;
+    --architect-aura-size: 180px;
+    --architect-accent: var(--auron-primary, #00d4ff);
+    --architect-glow-opacity: 0.25;
     position: relative;
-    display: grid;
+    display: flex;
     width: var(--architect-size);
-    height: var(--architect-size);
-    place-items: center;
+    min-height: var(--architect-size);
+    align-items: center;
+    justify-content: center;
     overflow: visible;
     isolation: isolate;
   }
 
-  .architect-container::before {
-    content: "";
+  .architect-aura {
     position: absolute;
-    inset: 12%;
-    z-index: -1;
+    z-index: 0;
+    width: var(--architect-aura-size);
+    height: var(--architect-aura-size);
     border-radius: 999px;
-    background: radial-gradient(circle, color-mix(in srgb, var(--architect-accent) 62%, transparent), transparent 68%);
-    filter: blur(22px);
+    background: radial-gradient(circle, var(--architect-accent) 0%, transparent 70%);
+    filter: blur(28px);
     opacity: var(--architect-glow-opacity);
     animation: architectAuraPulse 2.2s ease-in-out infinite;
+    pointer-events: none;
   }
 
   .architect-size-small {
-    --architect-size: 96px;
+    --architect-size: 104px;
+    --architect-aura-size: 132px;
   }
 
   .architect-size-medium {
-    --architect-size: 132px;
+    --architect-size: 140px;
+    --architect-aura-size: 180px;
   }
 
   .architect-size-large {
-    --architect-size: 180px;
+    --architect-size: 172px;
+    --architect-aura-size: 220px;
   }
 
-  .architect-sprite {
-    width: 160px;
-    height: 160px;
-    background-image: url("/sprites/architect-idle-32.png");
-    background-repeat: no-repeat;
-    background-size: 3200% 100%;
-    animation: architectIdle 1.2s steps(32) infinite;
+  .architect-image {
+    position: relative;
+    z-index: 1;
+    width: var(--architect-size);
+    height: auto;
+    object-fit: contain;
     image-rendering: pixelated;
-    transform: scale(calc(var(--architect-size) / 160));
-    transform-origin: center;
-  }
-
-  .architect-glow {
-    filter:
-      drop-shadow(0 0 6px var(--architect-accent))
-      drop-shadow(0 0 12px color-mix(in srgb, var(--architect-accent) 75%, transparent))
-      drop-shadow(0 0 24px color-mix(in srgb, var(--architect-accent) 45%, transparent));
+    filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.45));
   }
 
   .architect-mode-focus {
     --architect-accent: #00f0ff;
-    --architect-glow-opacity: 0.58;
-  }
-
-  .architect-mode-focus .architect-sprite {
-    background-image: url("/sprites/architect-focus-32.png");
-    animation-duration: 1s;
+    --architect-glow-opacity: 0.34;
   }
 
   .architect-mode-alert {
     --architect-accent: var(--auron-danger);
-    --architect-glow-opacity: 0.68;
-  }
-
-  .architect-mode-alert .architect-sprite {
-    background-image: url("/sprites/architect-alert-32.png");
-    animation-duration: 0.72s;
+    --architect-glow-opacity: 0.36;
   }
 
   .architect-mode-success {
     --architect-accent: #d4af37;
-    --architect-glow-opacity: 0.72;
-  }
-
-  .architect-mode-success .architect-sprite {
-    background-image: url("/sprites/architect-focus-32.png");
-    animation-duration: 0.9s;
+    --architect-glow-opacity: 0.38;
   }
 
   .architect-mode-shadow {
     --architect-accent: #8b5cf6;
-    --architect-glow-opacity: 0.55;
-  }
-
-  .architect-mode-shadow .architect-sprite {
-    background-image: url("/sprites/architect-idle-32.png");
-    animation-duration: 1.6s;
+    --architect-glow-opacity: 0.3;
   }
 
 }
@@ -589,15 +566,6 @@ body {
   }
 }
 
-@keyframes architectIdle {
-  from {
-    background-position: 0% 0;
-  }
-  to {
-    background-position: 100% 0;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -607,9 +575,8 @@ body {
     scroll-behavior: auto !important;
   }
 
-  .architect-sprite {
+  .architect-aura {
     animation: none !important;
-    background-position: 0 0;
   }
 }
 

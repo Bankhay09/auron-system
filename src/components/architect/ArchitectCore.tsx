@@ -1,5 +1,7 @@
 "use client";
 
+/* eslint-disable @next/next/no-img-element */
+
 import { createContext, ReactNode, useContext, useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -43,11 +45,12 @@ export function ArchitectCore({ mode, size = "medium", className }: ArchitectCor
 
   return (
     <div
-      className={cn("architect-container", `architect-size-${size}`, `architect-mode-${visualMode}`, className)}
+      className={cn("architect-core", `architect-size-${size}`, `architect-mode-${visualMode}`, className)}
       role="img"
       aria-label={`Arquiteto em estado ${visualMode}`}
     >
-      <div className="architect-sprite architect-glow" />
+      <div className="architect-aura" />
+      <img className="architect-image" src="/sprites/architect-idle.png" alt="Arquiteto" />
     </div>
   );
 }
