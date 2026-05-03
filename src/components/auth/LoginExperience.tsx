@@ -3,10 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import gsap from "gsap";
+import { useRouter } from "next/navigation";
 import { AuronLogo } from "@/components/AuronLogo";
+import { ArchitectCore } from "@/components/architect/ArchitectCore";
 import { AuthForm } from "./AuthForm";
 
 export function LoginExperience({ mode = "login" }: { mode?: "login" | "register" }) {
+  const router = useRouter();
   const [phase, setPhase] = useState<"welcome" | "login" | "return">("welcome");
   const frameRef = useRef<HTMLDivElement | null>(null);
 
@@ -30,6 +33,12 @@ export function LoginExperience({ mode = "login" }: { mode?: "login" | "register
     window.location.href = data.redirectTo;
   }
 
+  async function cancelRegistration() {
+    await fetch("/api/auth/logout", { method: "POST" }).catch(() => null);
+    setPhase("welcome");
+    router.push("/login");
+  }
+
   return (
     <main className="system-entry min-h-screen overflow-hidden bg-black px-4 py-8 text-[#e9fbff]">
       <div className="entry-particles" />
@@ -47,6 +56,9 @@ export function LoginExperience({ mode = "login" }: { mode?: "login" | "register
               className="system-entry-panel"
             >
               <AuronLogo />
+              <div className="mt-6 flex justify-center">
+                <ArchitectCore mode="focus" size="medium" />
+              </div>
               <h1 className="mt-8 text-center text-4xl font-black uppercase md:text-6xl">Bem-vindo ao Auron System</h1>
               <p className="mx-auto mt-4 max-w-xl text-center text-[#a7f7ff]">Inicializando protocolo de evolucao pessoal.</p>
               <button onClick={enter} className="entry-ok mt-8">OK</button>
@@ -61,12 +73,25 @@ export function LoginExperience({ mode = "login" }: { mode?: "login" | "register
               transition={{ type: "spring", stiffness: 120, damping: 16 }}
               className="system-entry-panel max-w-md"
             >
-              <div className="mb-6 flex justify-center"><AuronLogo /></div>
+              <div className="mb-6 flex items-center justify-center gap-4">
+                <AuronLogo />
+                <ArchitectCore mode="idle" size="small" className="hidden sm:grid" />
+              </div>
               <div className="mb-6 text-center">
                 <div className="text-xs uppercase tracking-[0.28em] text-[#7ff6ff]">Acesso restrito</div>
                 <h1 className="mt-2 text-3xl font-black uppercase text-white">{mode === "login" ? "Entrar no sistema" : "Criar identidade"}</h1>
               </div>
               <AuthForm mode={mode} onSuccess={handleSuccess} />
+              <div className="mt-5 flex flex-wrap justify-between gap-3 text-sm text-[#a7f7ff]">
+                <button onClick={() => setPhase("welcome")} className="rounded-lg border border-white/10 px-3 py-2 hover:border-[var(--auron-primary)]">
+                  Voltar
+                </button>
+                {mode === "register" && (
+                  <button onClick={cancelRegistration} className="rounded-lg border border-[var(--auron-danger)]/45 px-3 py-2 text-[#ffd6c9] hover:border-[var(--auron-danger)]">
+                    Cancelar registro
+                  </button>
+                )}
+              </div>
             </motion.div>
           ) : (
             <motion.div

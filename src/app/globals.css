@@ -344,6 +344,102 @@ body {
     box-shadow: 0 0 54px color-mix(in srgb, var(--auron-primary) 72%, transparent);
   }
 
+  .architect-container {
+    --architect-size: 160px;
+    --architect-accent: var(--auron-primary);
+    --architect-glow-opacity: 0.48;
+    position: relative;
+    display: grid;
+    width: var(--architect-size);
+    height: var(--architect-size);
+    place-items: center;
+    overflow: visible;
+    isolation: isolate;
+  }
+
+  .architect-container::before {
+    content: "";
+    position: absolute;
+    inset: 12%;
+    z-index: -1;
+    border-radius: 999px;
+    background: radial-gradient(circle, color-mix(in srgb, var(--architect-accent) 62%, transparent), transparent 68%);
+    filter: blur(22px);
+    opacity: var(--architect-glow-opacity);
+    animation: architectAuraPulse 2.2s ease-in-out infinite;
+  }
+
+  .architect-size-small {
+    --architect-size: 96px;
+  }
+
+  .architect-size-medium {
+    --architect-size: 132px;
+  }
+
+  .architect-size-large {
+    --architect-size: 180px;
+  }
+
+  .architect-sprite {
+    width: 160px;
+    height: 160px;
+    background-image: url("/sprites/architect-idle-32.png");
+    background-repeat: no-repeat;
+    background-size: 3200% 100%;
+    animation: architectIdle 1.2s steps(32) infinite;
+    image-rendering: pixelated;
+    transform: scale(calc(var(--architect-size) / 160));
+    transform-origin: center;
+  }
+
+  .architect-glow {
+    filter:
+      drop-shadow(0 0 6px var(--architect-accent))
+      drop-shadow(0 0 12px color-mix(in srgb, var(--architect-accent) 75%, transparent))
+      drop-shadow(0 0 24px color-mix(in srgb, var(--architect-accent) 45%, transparent));
+  }
+
+  .architect-mode-focus {
+    --architect-accent: #00f0ff;
+    --architect-glow-opacity: 0.58;
+  }
+
+  .architect-mode-focus .architect-sprite {
+    background-image: url("/sprites/architect-focus-32.png");
+    animation-duration: 1s;
+  }
+
+  .architect-mode-alert {
+    --architect-accent: var(--auron-danger);
+    --architect-glow-opacity: 0.68;
+  }
+
+  .architect-mode-alert .architect-sprite {
+    background-image: url("/sprites/architect-alert-32.png");
+    animation-duration: 0.72s;
+  }
+
+  .architect-mode-success {
+    --architect-accent: #d4af37;
+    --architect-glow-opacity: 0.72;
+  }
+
+  .architect-mode-success .architect-sprite {
+    background-image: url("/sprites/architect-focus-32.png");
+    animation-duration: 0.9s;
+  }
+
+  .architect-mode-shadow {
+    --architect-accent: #8b5cf6;
+    --architect-glow-opacity: 0.55;
+  }
+
+  .architect-mode-shadow .architect-sprite {
+    background-image: url("/sprites/architect-idle-32.png");
+    animation-duration: 1.6s;
+  }
+
 }
 
 @keyframes auron-bg-drift {
@@ -493,6 +589,15 @@ body {
   }
 }
 
+@keyframes architectIdle {
+  from {
+    background-position: 0% 0;
+  }
+  to {
+    background-position: 100% 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -500,6 +605,11 @@ body {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
+  }
+
+  .architect-sprite {
+    animation: none !important;
+    background-position: 0 0;
   }
 }
 

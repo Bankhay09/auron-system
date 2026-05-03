@@ -3,9 +3,11 @@
 import Link from "next/link";
 import { ReactNode } from "react";
 import { AuronLogo } from "@/components/AuronLogo";
+import { ArchitectStateProvider } from "@/components/architect/ArchitectCore";
 
 const nav = [
   ["Dashboard", "/dashboard"],
+  ["Arquiteto", "/architect"],
   ["Daily Quest", "/daily-quest"],
   ["Diario", "/diary"],
   ["Ranking", "/ranking"],
@@ -44,7 +46,9 @@ export function AppShell({ children }: { children: ReactNode }) {
             </nav>
           </div>
         </aside>
-        <section className="min-w-0 flex-1">{children}</section>
+        <section className="min-w-0 flex-1">
+          <ArchitectStateProvider>{children}</ArchitectStateProvider>
+        </section>
       </div>
     </main>
   );

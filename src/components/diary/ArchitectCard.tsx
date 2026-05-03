@@ -1,11 +1,11 @@
-import { ArchitectSprite } from "@/components/architect/ArchitectSprite";
+import { ArchitectCore } from "@/components/architect/ArchitectCore";
 
 export function ArchitectCard({ response }: { response?: Record<string, string> | null }) {
   return (
     <aside className="auron-panel rounded-2xl p-5">
       <div className="flex items-center gap-4">
         <div>
-          <ArchitectSprite size="small" contained />
+          <ArchitectCore mode={response ? "success" : "idle"} size="small" />
         </div>
         <div>
           <div className="text-xs uppercase tracking-[0.22em] text-[#bda889]">Assistente IA</div>

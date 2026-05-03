@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Send } from "lucide-react";
-import { ArchitectSprite } from "./ArchitectSprite";
+import { ArchitectCore, useArchitectState } from "./ArchitectCore";
 import { ArchitectSpeech } from "./ArchitectSpeech";
 
 type ChatMessage = {
@@ -18,6 +18,7 @@ const emptyDirective = [
 ];
 
 export function ArchitectPanel() {
+  const { setArchitectState } = useArchitectState();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
@@ -40,6 +41,7 @@ export function ArchitectPanel() {
     const trimmed = content.trim();
     if (!trimmed || loading) return;
     setLoading(true);
+    setArchitectState("analyzing");
     setError("");
     const response = await fetch("/api/architect/chat", {
       method: "POST",
@@ -49,9 +51,12 @@ export function ArchitectPanel() {
     const data = await response.json().catch(() => ({}));
     setLoading(false);
     if (!response.ok) {
+      setArchitectState("warning");
       setError(data.message || "O Arquiteto ficou em silencio por um instante. Tente novamente.");
       return;
     }
+    setArchitectState("success");
+    window.setTimeout(() => setArchitectState("idle"), 1200);
     setMessages((current) => [...current, ...(data.messages ?? [])]);
     setContent("");
   }
@@ -61,7 +66,9 @@ export function ArchitectPanel() {
   return (
     <div className="grid gap-5 xl:grid-cols-[320px_minmax(0,1fr)]">
       <aside className="auron-panel rounded-3xl p-4 sm:p-5">
-        <ArchitectSprite size="large" contained className="mx-auto w-full" />
+        <div className="grid place-items-center">
+          <ArchitectCore mode={loading ? "focus" : error ? "alert" : messages.length > 0 ? "shadow" : "idle"} size="large" />
+        </div>
         <ArchitectSpeech messages={latestAssistant ? [latestAssistant] : emptyDirective} className="mt-4" />
       </aside>
 

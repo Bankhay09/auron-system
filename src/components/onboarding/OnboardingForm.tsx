@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Check, Plus, ShieldCheck, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
-import { ArchitectSprite } from "@/components/architect/ArchitectSprite";
+import { ArchitectCore } from "@/components/architect/ArchitectCore";
 import { ArchitectSpeech } from "@/components/architect/ArchitectSpeech";
 
 type OnboardingPayload = {
@@ -211,7 +211,9 @@ function ArchitectStage({ messages, children }: { messages: string[]; children: 
     <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px]">
       <div className="order-2 min-w-0 lg:order-1">{children}</div>
       <aside className="order-1 grid content-start gap-4 lg:sticky lg:top-6 lg:order-2">
-        <ArchitectSprite size="medium" contained className="w-full" />
+        <div className="grid place-items-center">
+          <ArchitectCore mode="focus" size="medium" />
+        </div>
         <ArchitectSpeech messages={messages} />
       </aside>
     </div>
