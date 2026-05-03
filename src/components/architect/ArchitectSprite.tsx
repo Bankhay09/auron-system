@@ -18,14 +18,13 @@ export function ArchitectSprite(_props: ArchitectSpriteProps) {
       width: "100%"
     }}>
       <img
-        src="/sprites/architect-reference.png?v=force-visual-replace"
+        src="/sprites/architect-idle.png"
         alt="Arquiteto"
         style={{
           width: "100%",
-          maxWidth: "420px",
+          maxWidth: "120px",
           height: "auto",
-          objectFit: "contain",
-          border: "3px solid red"
+          objectFit: "contain"
         }}
       />
     </div>
