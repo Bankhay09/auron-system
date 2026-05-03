@@ -347,8 +347,8 @@ body {
   .architect-core {
     --architect-size: 140px;
     --architect-aura-size: 180px;
-    --architect-accent: var(--auron-primary, #00d4ff);
-    --architect-glow-opacity: 0.25;
+    --architect-accent: #00d4ff;
+    --architect-glow-opacity: 0.2;
     position: relative;
     display: flex;
     width: var(--architect-size);
@@ -357,6 +357,10 @@ body {
     justify-content: center;
     overflow: visible;
     isolation: isolate;
+    filter: none;
+    opacity: 1;
+    mix-blend-mode: normal;
+    backdrop-filter: none;
   }
 
   .architect-aura {
@@ -365,8 +369,8 @@ body {
     width: var(--architect-aura-size);
     height: var(--architect-aura-size);
     border-radius: 999px;
-    background: radial-gradient(circle, var(--architect-accent) 0%, transparent 70%);
-    filter: blur(28px);
+    background: radial-gradient(circle, #00d4ff 0%, transparent 70%);
+    filter: blur(30px);
     opacity: var(--architect-glow-opacity);
     animation: architectAuraPulse 2.2s ease-in-out infinite;
     pointer-events: none;
@@ -388,13 +392,18 @@ body {
   }
 
   .architect-image {
+    all: unset;
+    display: block;
     position: relative;
     z-index: 1;
     width: var(--architect-size);
     height: auto;
     object-fit: contain;
     image-rendering: pixelated;
-    filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.45));
+    filter: drop-shadow(0 0 6px rgba(0, 212, 255, 0.4));
+    opacity: 1;
+    mix-blend-mode: normal;
+    backdrop-filter: none;
   }
 
   .architect-mode-focus {

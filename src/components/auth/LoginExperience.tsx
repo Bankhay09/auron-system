@@ -15,7 +15,7 @@ export function LoginExperience({ mode = "login" }: { mode?: "login" | "register
 
   useEffect(() => {
     if (!frameRef.current) return;
-    gsap.fromTo(frameRef.current, { filter: "blur(8px)", scale: 0.96 }, { filter: "blur(0px)", scale: 1, duration: 0.7, ease: "power3.out" });
+    gsap.fromTo(frameRef.current, { scale: 0.96 }, { scale: 1, duration: 0.7, ease: "power3.out" });
   }, [phase]);
 
   function enter() {
@@ -49,9 +49,9 @@ export function LoginExperience({ mode = "login" }: { mode?: "login" | "register
             <motion.div
               key="welcome"
               ref={frameRef}
-              initial={{ opacity: 0, scale: 0.82 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.94, filter: "blur(10px)" }}
+              initial={{ scale: 0.82 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.94 }}
               transition={{ type: "spring", stiffness: 120, damping: 16 }}
               className="system-entry-panel"
             >
@@ -67,9 +67,9 @@ export function LoginExperience({ mode = "login" }: { mode?: "login" | "register
             <motion.div
               key="login"
               ref={frameRef}
-              initial={{ opacity: 0, scale: 0.84 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.94 }}
+              initial={{ scale: 0.84 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.94 }}
               transition={{ type: "spring", stiffness: 120, damping: 16 }}
               className="system-entry-panel max-w-md"
             >
@@ -97,9 +97,9 @@ export function LoginExperience({ mode = "login" }: { mode?: "login" | "register
             <motion.div
               key="return"
               ref={frameRef}
-              initial={{ opacity: 0, scale: 0.88 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.94 }}
+              initial={{ scale: 0.88 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.94 }}
               transition={{ type: "spring", stiffness: 130, damping: 15 }}
               className="system-entry-panel max-w-xl text-center"
             >
